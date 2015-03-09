@@ -72,6 +72,15 @@ class CallbackHandler(tornado.web.RequestHandler):
         global_buffer.new_notifications([notification])
 
 
+class CallbackOkHandler(tornado.web.RequestHandler):
+    def check_xsrf_cookie(self):
+        pass
+
+    def post(self):
+        logging.info('Asynchronous processing must be performed here for :%s', self.request.body)
+        self.set_status(202)
+
+
 class CallbackTimeoutHandler(tornado.web.RequestHandler):
     def check_xsrf_cookie(self):
         pass
@@ -115,6 +124,7 @@ if __name__ == "__main__":
         [
             (r"/", MainHandler),
             (r"/a/callback/echo", CallbackHandler),
+            (r"/a/callback/ok", CallbackOkHandler),
             (r"/a/callback/timeout", CallbackTimeoutHandler),
             (r"/a/callback/error", CallbackErrorHandler),
             (r"/a/watch", CallbackWatcher),
